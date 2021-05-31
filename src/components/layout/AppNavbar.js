@@ -15,7 +15,7 @@ class AppNavbar extends Component {
             data-bs-toggle="collapse"
             data-bs-target="#navbarMain"
           >
-            <spna className="navbar-toggler-icon"></spna>
+            <span className="navbar-toggler-icon"></span>
           </button>
 
           <div className="collapse navbar-collapse" id="navbarMain">

@@ -23,56 +23,56 @@ const Clients = () => {
     }
   }, [clients]);
 
-  if (clients) {
-    return (
-      <>
-        <div className="d-flex justify-content-between">
-          <h2>
-            <i className="fas fa-users" /> Clients
-          </h2>
-
-          <h5 className="text-right text-secondary">
-            Total Owed{' '}
-            <span className="text-primary">
-              ${parseFloat(totalOwed).toFixed(2)}
-            </span>
-          </h5>
-        </div>
-
-        <table className="table table-striped">
-          <thead className="thead-inverse">
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Balance</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {clients.map((client) => (
-              <tr key={client.id}>
-                <td>
-                  {client.firstName} {client.lastName}
-                </td>
-                <td>{client.email}</td>
-                <td>${parseFloat(client.balance).toFixed(2)}</td>
-                <td>
-                  <Link
-                    to={`/client/${client.id}`}
-                    className="btn btn-secondary btn-sm"
-                  >
-                    <i className="fas fa-arrow-circle-right" /> Details
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </>
-    );
-  } else {
+  if (!clients) {
     return <Spinner />;
   }
+
+  return (
+    <>
+      <div className="d-flex justify-content-between">
+        <h2>
+          <i className="fas fa-users" /> Clients
+        </h2>
+
+        <h5 className="text-right text-secondary">
+          Total Owed{' '}
+          <span className="text-primary">
+            ${parseFloat(totalOwed).toFixed(2)}
+          </span>
+        </h5>
+      </div>
+
+      <table className="table table-striped">
+        <thead className="thead-inverse">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Balance</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {clients.map((client) => (
+            <tr key={client.id}>
+              <td>
+                {client.firstName} {client.lastName}
+              </td>
+              <td>{client.email}</td>
+              <td>${parseFloat(client.balance).toFixed(2)}</td>
+              <td>
+                <Link
+                  to={`/client/${client.id}`}
+                  className="btn btn-secondary btn-sm"
+                >
+                  <i className="fas fa-arrow-circle-right" /> Details
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
 };
 
 export default Clients;

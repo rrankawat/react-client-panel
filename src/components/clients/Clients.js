@@ -1,36 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useFirestoreConnect } from 'react-redux-firebase';
+
+import Spinner from '../layout/spinner/Spinner';
 
 const Clients = () => {
-  const clients = [
-    {
-      id: 1,
-      firstName: 'Kevin',
-      lastName: 'Johnson',
-      email: 'kevin@gmail.com',
-      phone: '555-555-5555',
-      balance: '50',
-    },
-    {
-      id: 2,
-      firstName: 'Erika',
-      lastName: 'Albright',
-      email: 'erika@gmail.com',
-      phone: '555-555-5551',
-      balance: '100',
-    },
-  ];
+  useFirestoreConnect(['clients']);
+
+  const clients = useSelector((state) => state.firestore.ordered.clients);
+
+  const [totalOwed, setTotalOwed] = useState(null);
+
+  useEffect(() => {
+    if (clients) {
+      // Add balance
+      const total = clients.reduce((total, client) => {
+        return total + parseFloat(client.balance.toString());
+      }, 0);
+
+      setTotalOwed(total);
+    }
+  }, [clients]);
 
   if (clients) {
     return (
-      <div>
-        <div className="row">
-          <div className="col-md-6">
-            <h2>
-              <i className="fas fa-users" /> Clients
-            </h2>
-          </div>
-          <div className="col-md-6"></div>
+      <>
+        <div className="d-flex justify-content-between">
+          <h2>
+            <i className="fas fa-users" /> Clients
+          </h2>
+
+          <h5 className="text-right text-secondary">
+            Total Owed{' '}
+            <span className="text-primary">
+              ${parseFloat(totalOwed).toFixed(2)}
+            </span>
+          </h5>
         </div>
 
         <table className="table table-striped">
@@ -62,10 +68,10 @@ const Clients = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </>
     );
   } else {
-    return <h1>Loading...</h1>;
+    return <Spinner />;
   }
 };
 

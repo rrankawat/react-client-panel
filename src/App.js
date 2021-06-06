@@ -7,7 +7,7 @@ import { store, rrfProps } from './store';
 
 import AppNavbar from './components/layout/AppNavbar';
 import Dashboard from './components/layout/Dashboard';
-import AddClient from './components/clients/AddClient';
+import UpdateClient from './components/clients/UpdateClient';
 import ClientDetails from './components/clients/ClientDetails';
 
 const App = () => {
@@ -19,8 +19,13 @@ const App = () => {
           <div className="container">
             <Switch>
               <Route exact path="/" component={Dashboard} />
-              <Route exact path="/client/add" component={AddClient} />
+              <Route exact path="/client/add" component={UpdateClient} />
               <Route exact path="/client/:clientId" component={ClientDetails} />
+              <Route
+                exact
+                path="/client/edit/:clientId"
+                component={UpdateClient}
+              />
             </Switch>
           </div>
         </Router>

@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { useFirestore } from 'react-redux-firebase';
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
 
-const AddClient = () => {
-  const firestore = useFirestore();
+import Spinner from '../layout/spinner/Spinner';
+
+const UpdateClient = () => {
   const history = useHistory();
+  const { clientId } = useParams();
+  const firestore = useFirestore();
 
-  const [client, setClient] = useState({
+  useFirestoreConnect([{ collection: 'clients', doc: clientId }]);
+
+  const client = useSelector(
+    (state) =>
+      state.firestore.ordered.clients && state.firestore.ordered.clients[0]
+  );
+
+  const [inputs, setInputs] = useState({
     firstName: '',
     lastName: '',
     email: '',
@@ -14,23 +25,59 @@ const AddClient = () => {
     balance: '',
   });
 
+  useEffect(() => {
+    if (client && clientId) {
+      setInputs({
+        firstName: client.firstName || '',
+        lastName: client.lastName || '',
+        email: client.email || '',
+        phone: client.phone || '',
+        balance: client.balance || '',
+      });
+    } else {
+      onReset();
+    }
+  }, [client, clientId]);
+
   const onChange = (e) => {
     const { name, value } = e.target;
-    setClient((client) => ({ ...client, [name]: value }));
+    setInputs((inputs) => ({ ...inputs, [name]: value }));
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const newClient = client;
+    const payload = inputs;
 
     // If no balance
-    if (newClient.balance === '') {
-      newClient.balance = 0;
+    if (payload.balance === '') {
+      payload.balance = 0;
     }
 
-    firestore.collection('clients').add(newClient).then(history.push('/'));
+    if (client && clientId) {
+      firestore
+        .update({ collection: 'clients', doc: clientId }, payload)
+        .then(history.push('/'));
+    } else {
+      firestore.add({ collection: 'clients' }, payload).then(history.push('/'));
+    }
+
+    // Reset Inputs
+    onReset();
   };
+
+  const onReset = () =>
+    setInputs({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      balance: '',
+    });
+
+  if (!client && clientId) {
+    return <Spinner />;
+  }
 
   return (
     <>
@@ -43,7 +90,10 @@ const AddClient = () => {
       </div>
 
       <div className="card mt-2">
-        <div className="card-header">Add Client</div>
+        <div className="card-header">
+          {clientId ? 'Edit Client' : 'Add Client'}
+        </div>
+
         <div className="card-body">
           <form onSubmit={onSubmit}>
             <div className="mb-1">
@@ -54,7 +104,7 @@ const AddClient = () => {
                 name="firstName"
                 minLength="2"
                 required
-                value={client.firstName}
+                value={inputs.firstName}
                 onChange={onChange}
               />
             </div>
@@ -67,7 +117,7 @@ const AddClient = () => {
                 name="lastName"
                 minLength="2"
                 required
-                value={client.lastName}
+                value={inputs.lastName}
                 onChange={onChange}
               />
             </div>
@@ -78,7 +128,7 @@ const AddClient = () => {
                 type="email"
                 className="form-control"
                 name="email"
-                value={client.email}
+                value={inputs.email}
                 onChange={onChange}
               />
             </div>
@@ -91,7 +141,7 @@ const AddClient = () => {
                 name="phone"
                 minLength="10"
                 required
-                value={client.phone}
+                value={inputs.phone}
                 onChange={onChange}
               />
             </div>
@@ -102,14 +152,14 @@ const AddClient = () => {
                 type="text"
                 className="form-control"
                 name="balance"
-                value={client.balance}
+                value={inputs.balance}
                 onChange={onChange}
               />
             </div>
 
             <input
               type="submit"
-              value="Submit"
+              value={clientId ? 'Update Client' : 'Add Client'}
               className="btn btn-primary w-100"
             />
           </form>
@@ -119,4 +169,4 @@ const AddClient = () => {
   );
 };
 
-export default AddClient;
+export default UpdateClient;

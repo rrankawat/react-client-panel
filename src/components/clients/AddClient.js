@@ -29,10 +29,7 @@ const AddClient = () => {
       newClient.balance = 0;
     }
 
-    firestore
-      .collection('clients')
-      .add(newClient)
-      .then(() => history.push('/'));
+    firestore.collection('clients').add(newClient).then(history.push('/'));
   };
 
   return (

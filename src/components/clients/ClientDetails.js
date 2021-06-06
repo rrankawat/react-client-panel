@@ -1,12 +1,15 @@
-import React from 'react';
-import { useFirestoreConnect } from 'react-redux-firebase';
+import React, { useState } from 'react';
+import { useFirestoreConnect, useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 
 import Spinner from '../layout/spinner/Spinner';
 
 const ClientDetails = () => {
   const { clientId } = useParams();
+  const history = useHistory();
+  const firestore = useFirestore();
+
   useFirestoreConnect(() => [{ collection: 'clients', doc: clientId }]);
 
   const client = useSelector(
@@ -14,8 +17,53 @@ const ClientDetails = () => {
       state.firestore.ordered.clients && state.firestore.ordered.clients[0]
   );
 
+  const [showBalanceUpdate, setShowBalanceUpdate] = useState(false);
+  const [balanceUpdateAmount, setBalanceUpdateAmount] = useState('');
+
   if (!client) {
     return <Spinner />;
+  }
+
+  const balanceSubmit = (e) => {
+    e.preventDefault();
+
+    const clientUpdate = {
+      balance: parseFloat(balanceUpdateAmount),
+    };
+
+    firestore.update({ collection: 'clients', doc: clientId }, clientUpdate);
+  };
+
+  const onDelete = () =>
+    firestore
+      .delete({ collection: 'clients', doc: clientId })
+      .then(history.push('/'));
+
+  let balanceForm = '';
+  // If balance form should display
+  if (showBalanceUpdate) {
+    balanceForm = (
+      <form onSubmit={balanceSubmit}>
+        <div className="input-group">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Add New Balance"
+            value={balanceUpdateAmount}
+            onChange={(e) => setBalanceUpdateAmount(e.target.value)}
+          />
+          <div className="input-group-append">
+            <input
+              type="submit"
+              value="Update"
+              className="btn btn-outline-dark"
+            />
+          </div>
+        </div>
+      </form>
+    );
+  } else {
+    balanceForm = null;
   }
 
   return (
@@ -29,7 +77,9 @@ const ClientDetails = () => {
           <Link to={`/client/edit/${client.id}`} className="btn btn-dark">
             Edit
           </Link>
-          <button className="btn btn-danger">Delete</button>
+          <button className="btn btn-danger" onClick={onDelete}>
+            Delete
+          </button>
         </div>
       </div>
 
@@ -44,17 +94,31 @@ const ClientDetails = () => {
 
         <div className="card-body">
           <div className="d-flex justify-content-between">
-            <h4>
+            <h5>
               Client ID: <span className="text-secondary">{client.id}</span>
-            </h4>
-            <h4>
-              Balance:{' '}
-              <span
-                className={client.balance > 0 ? 'text-success' : 'text-danger'}
-              >
-                ${parseFloat(client.balance).toFixed(2)}
-              </span>
-            </h4>
+            </h5>
+
+            <div className="d-flex flex-column">
+              <h5>
+                Balance:{' '}
+                <span
+                  className={
+                    client.balance > 0 ? 'text-success' : 'text-danger'
+                  }
+                >
+                  ${parseFloat(client.balance).toFixed(2)}
+                </span>{' '}
+                <small>
+                  <a
+                    href="#!"
+                    onClick={() => setShowBalanceUpdate(!showBalanceUpdate)}
+                  >
+                    <i className="fas fa-pencil-alt" />
+                  </a>
+                </small>
+              </h5>
+              {balanceForm}
+            </div>
           </div>
 
           <hr />

@@ -8,6 +8,7 @@ import { store, rrfProps } from './store';
 import AppNavbar from './components/layout/AppNavbar';
 import Dashboard from './components/layout/Dashboard';
 import AddClient from './components/clients/AddClient';
+import ClientDetails from './components/clients/ClientDetails';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
             <Switch>
               <Route exact path="/" component={Dashboard} />
               <Route exact path="/client/add" component={AddClient} />
+              <Route exact path="/client/:clientId" component={ClientDetails} />
             </Switch>
           </div>
         </Router>

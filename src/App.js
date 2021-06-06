@@ -9,6 +9,7 @@ import AppNavbar from './components/layout/AppNavbar';
 import Dashboard from './components/layout/Dashboard';
 import UpdateClient from './components/clients/UpdateClient';
 import ClientDetails from './components/clients/ClientDetails';
+import Login from './components/auth/Login';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
                 path="/client/edit/:clientId"
                 component={UpdateClient}
               />
+              <Route exact path="/login" component={Login} />
             </Switch>
           </div>
         </Router>

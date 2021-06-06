@@ -39,10 +39,8 @@ const UpdateClient = () => {
     }
   }, [client, clientId]);
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((inputs) => ({ ...inputs, [name]: value }));
-  };
+  const onChange = (e) =>
+    setInputs((inputs) => ({ ...inputs, [e.target.name]: e.target.value }));
 
   const onSubmit = (e) => {
     e.preventDefault();

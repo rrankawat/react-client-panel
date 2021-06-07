@@ -8,21 +8,15 @@ const AppNavbar = () => {
 
   const auth = useSelector((state) => state.firebase.auth);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
 
   useEffect(() => {
     if (auth && auth.uid) {
-      setIsAuthenticated(true);
+      setIsAuth(true);
     } else {
-      setIsAuthenticated(false);
+      setIsAuth(false);
     }
   }, [auth]);
-
-  const onLogout = (e) => {
-    e.preventDefault();
-
-    firebase.logout();
-  };
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-primary mb-4">
@@ -41,7 +35,7 @@ const AppNavbar = () => {
 
         <div className="collapse navbar-collapse" id="navbarMain">
           <ul className="navbar-nav">
-            {isAuthenticated && (
+            {isAuth && (
               <li className="nav-item">
                 <Link to="/" className="nav-link">
                   Dashboard
@@ -50,17 +44,21 @@ const AppNavbar = () => {
             )}
           </ul>
 
-          {isAuthenticated && (
+          {isAuth && (
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a href="/#!" className="nav-link">
+                <Link to="/#" className="nav-link">
                   {auth.email}
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a href="/#!" className="nav-link" onClick={onLogout}>
+                <Link
+                  to="/#"
+                  className="nav-link"
+                  onClick={() => firebase.logout()}
+                >
                   Logout
-                </a>
+                </Link>
               </li>
             </ul>
           )}

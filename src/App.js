@@ -1,9 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 
 import { Provider } from 'react-redux';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { store, rrfProps } from './store';
+
+import PrivateRoute from './routes/PrivateRoute';
+import PublicRoute from './routes/PublicRoute';
 
 import AppNavbar from './components/layout/AppNavbar';
 import Dashboard from './components/layout/Dashboard';
@@ -19,15 +22,24 @@ const App = () => {
           <AppNavbar />
           <div className="container">
             <Switch>
-              <Route exact path="/" component={Dashboard} />
-              <Route exact path="/client/add" component={UpdateClient} />
-              <Route exact path="/client/:clientId" component={ClientDetails} />
-              <Route
+              <PrivateRoute exact path="/" component={Dashboard} />
+              <PrivateRoute exact path="/client/add" component={UpdateClient} />
+              <PrivateRoute
+                exact
+                path="/client/:clientId"
+                component={ClientDetails}
+              />
+              <PrivateRoute
                 exact
                 path="/client/edit/:clientId"
                 component={UpdateClient}
               />
-              <Route exact path="/login" component={Login} />
+              <PublicRoute
+                restricted={true}
+                exact
+                path="/login"
+                component={Login}
+              />
             </Switch>
           </div>
         </Router>

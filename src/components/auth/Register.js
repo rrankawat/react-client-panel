@@ -5,7 +5,7 @@ import { notifyUser } from '../../redux/notify/notifyAction';
 
 import Alert from '../layout/Alert';
 
-const Login = () => {
+const Register = () => {
   const firebase = useFirebase();
   const dispatch = useDispatch();
 
@@ -24,10 +24,10 @@ const Login = () => {
 
     const { email, password } = inputs;
 
-    firebase.login({ email, password }).catch(() =>
+    firebase.createUser({ email, password }).catch(() =>
       dispatch(
         notifyUser({
-          message: 'Invalid Login Credentials',
+          message: 'User Already Exists',
           messageType: 'error',
         })
       )
@@ -43,7 +43,7 @@ const Login = () => {
 
             <h1 className="text-center pb-4 pt-3">
               <span className="text-primary">
-                <i className="fas fa-lock" /> Login
+                <i className="fas fa-lock" /> Register
               </span>
             </h1>
 
@@ -74,7 +74,7 @@ const Login = () => {
 
               <input
                 type="submit"
-                value="Login"
+                value="Register"
                 className="btn btn-primary w-100"
               />
             </form>
@@ -85,4 +85,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

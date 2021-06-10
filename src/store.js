@@ -2,10 +2,14 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { firebaseReducer } from 'react-redux-firebase';
 import { createFirestoreInstance, firestoreReducer } from 'redux-firestore';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import thunk from 'redux-thunk';
+
+// Custom Reducers
+import nofityReducer from './redux/notify/notifyReducer';
 
 const fbConfig = {
   apiKey: 'AIzaSyDHwZxtlR7jHVHl565h92NvtWaNpPtuVa4',
@@ -32,15 +36,18 @@ firebase.firestore();
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
   firestore: firestoreReducer,
+  notify: nofityReducer,
 });
 
 // Create store with reducers and initial state
 const initialState = {};
 
+const middleware = [thunk];
+
 export const store = createStore(
   rootReducer,
   initialState,
-  composeWithDevTools()
+  composeWithDevTools(applyMiddleware(...middleware))
 );
 
 export const rrfProps = {

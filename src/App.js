@@ -13,6 +13,8 @@ import Dashboard from './components/layout/Dashboard';
 import UpdateClient from './components/clients/UpdateClient';
 import ClientDetails from './components/clients/ClientDetails';
 import Login from './components/auth/Login';
+// import Register from './components/auth/Register';
+import NotFound from './components/pages/NotFound';
 
 const App = () => {
   return (
@@ -40,6 +42,13 @@ const App = () => {
                 path="/login"
                 component={Login}
               />
+              {/* <PublicRoute
+                restricted={true}
+                exact
+                path="/register"
+                component={Register}
+              /> */}
+              <PublicRoute restricted={false} exact component={NotFound} />
             </Switch>
           </div>
         </Router>

@@ -44,24 +44,39 @@ const AppNavbar = () => {
             )}
           </ul>
 
-          {isAuth && (
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link to="/#" className="nav-link">
-                  {auth.email}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  to="/#"
-                  className="nav-link"
-                  onClick={() => firebase.logout()}
-                >
-                  Logout
-                </Link>
-              </li>
-            </ul>
-          )}
+          <ul className="navbar-nav ms-auto">
+            {isAuth ? (
+              <>
+                <li className="nav-item">
+                  <Link to="/#" className="nav-link">
+                    {auth.email}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/#"
+                    className="nav-link"
+                    onClick={() => firebase.logout()}
+                  >
+                    Logout
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                {/* <li className="nav-item">
+                  <Link to="/login" className="nav-link">
+                    Login
+                  </Link>
+                </li> */}
+                {/* <li className="nav-item">
+                  <Link to="/register" className="nav-link">
+                    Register
+                  </Link>
+                </li> */}
+              </>
+            )}
+          </ul>
         </div>
       </div>
     </nav>
